@@ -29,7 +29,29 @@ if uploaded_file is not None:
     rfm['Cluster'] = model.predict(rfm_scaled)
 
     st.success("✅ Segmentation Complete!")
-    st.dataframe(rfm)
+    st.dataframe(rfm[['Order_ID', 'Recency', 'Frequency', 'Monetary', 'Cluster', 'Customer_Type']])
+
 
     csv = rfm.to_csv(index=False).encode('utf-8')
     st.download_button("📥 Download Results", data=csv, file_name='segmented_customers.csv')
+
+rfm['Cluster'] = model.predict(rfm_scaled)
+
+# Step 4.5: Add custom labels for each cluster (based on your analysis)
+def label_cluster(row):
+    if row['Cluster'] == 1:
+        return 'VIP Customers'
+    elif row['Cluster'] == 0:
+        return 'Low Value'
+    elif row['Cluster'] == 2:
+        return 'Regulars'
+    else:
+        return 'At Risk'
+
+rfm['Customer_Type'] = rfm.apply(label_cluster, axis=1)
+
+cluster_summary = rfm.groupby('Customer_Type')[['Recency', 'Frequency', 'Monetary']].mean()
+st.subheader("📊 Cluster Summary (Avg RFM by Group)")
+st.dataframe(cluster_summary)
+
+
