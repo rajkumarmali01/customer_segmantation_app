@@ -5,7 +5,7 @@ import joblib
 model = joblib.load('customer_segmentation_model.pkl')
 scaler = joblib.load('scaler.pkl')
 
-st.title("🧠 Customer Segmentation App")
+st.title("🧠 Customer Segmentation App for Maruti Agency")
 
 uploaded_file = st.file_uploader("📁 Upload your CSV file", type=["csv"])
 if uploaded_file is not None:
